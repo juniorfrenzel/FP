@@ -22,7 +22,9 @@ namespace FP.Data
         public int IdCategoria { get; set; }
         public string Descricao { get; set; }
         public bool Basica { get; set; }
+        public Nullable<int> IdTipoFinanca { get; set; }
     
+        public virtual TipoFinanca TipoFinanca { get; set; }
         public virtual ICollection<Financa> Financas { get; set; }
     }
 }

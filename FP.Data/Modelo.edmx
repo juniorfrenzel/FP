@@ -8,13 +8,14 @@
         <EntityContainer Name="DB_FINANCASModelStoreContainer">
           <EntitySet Name="Categorias" EntityType="DB_FINANCASModel.Store.Categorias" store:Type="Tables" Schema="dbo" />
           <EntitySet Name="Financas" EntityType="DB_FINANCASModel.Store.Financas" store:Type="Tables" Schema="dbo" />
+          <EntitySet Name="sysdiagrams" EntityType="DB_FINANCASModel.Store.sysdiagrams" store:Type="Tables" Schema="dbo" />
           <EntitySet Name="TipoFinancas" EntityType="DB_FINANCASModel.Store.TipoFinancas" store:Type="Tables" Schema="dbo" />
+          <AssociationSet Name="FK_Categorias_TipoFinancas" Association="DB_FINANCASModel.Store.FK_Categorias_TipoFinancas">
+            <End Role="TipoFinancas" EntitySet="TipoFinancas" />
+            <End Role="Categorias" EntitySet="Categorias" />
+          </AssociationSet>
           <AssociationSet Name="FK_Financas_Categorias" Association="DB_FINANCASModel.Store.FK_Financas_Categorias">
             <End Role="Categorias" EntitySet="Categorias" />
-            <End Role="Financas" EntitySet="Financas" />
-          </AssociationSet>
-          <AssociationSet Name="FK_Financas_TipoFinancas" Association="DB_FINANCASModel.Store.FK_Financas_TipoFinancas">
-            <End Role="TipoFinancas" EntitySet="TipoFinancas" />
             <End Role="Financas" EntitySet="Financas" />
           </AssociationSet>
         </EntityContainer>
@@ -25,6 +26,7 @@
           <Property Name="IdCategoria" Type="int" Nullable="false" StoreGeneratedPattern="Identity" />
           <Property Name="Descricao" Type="varchar" Nullable="false" MaxLength="50" />
           <Property Name="Basica" Type="bit" Nullable="false" />
+          <Property Name="IdTipoFinanca" Type="int" />
         </EntityType>
         <EntityType Name="Financas">
           <Key>
@@ -32,13 +34,22 @@
           </Key>
           <Property Name="IdFinanca" Type="int" Nullable="false" StoreGeneratedPattern="Identity" />
           <Property Name="IdCategoria" Type="int" Nullable="false" />
-          <Property Name="IdTipoFinanca" Type="int" Nullable="false" />
           <Property Name="Descricao" Type="varchar" Nullable="false" MaxLength="50" />
           <Property Name="Valor" Type="float" Nullable="false" />
           <Property Name="Data" Type="date" Nullable="false" />
           <Property Name="Fechada" Type="bit" Nullable="false" />
           <Property Name="Paga" Type="bit" Nullable="false" />
           <Property Name="Comprovante" Type="varbinary(max)" />
+        </EntityType>
+        <EntityType Name="sysdiagrams">
+          <Key>
+            <PropertyRef Name="diagram_id" />
+          </Key>
+          <Property Name="name" Type="nvarchar" Nullable="false" MaxLength="128" />
+          <Property Name="principal_id" Type="int" Nullable="false" />
+          <Property Name="diagram_id" Type="int" Nullable="false" StoreGeneratedPattern="Identity" />
+          <Property Name="version" Type="int" />
+          <Property Name="definition" Type="varbinary(max)" />
         </EntityType>
         <EntityType Name="TipoFinancas">
           <Key>
@@ -47,6 +58,18 @@
           <Property Name="IdTipoFinanca" Type="int" Nullable="false" StoreGeneratedPattern="Identity" />
           <Property Name="Descricao" Type="varchar" Nullable="false" MaxLength="30" />
         </EntityType>
+        <Association Name="FK_Categorias_TipoFinancas">
+          <End Role="TipoFinancas" Type="DB_FINANCASModel.Store.TipoFinancas" Multiplicity="0..1" />
+          <End Role="Categorias" Type="DB_FINANCASModel.Store.Categorias" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="TipoFinancas">
+              <PropertyRef Name="IdTipoFinanca" />
+            </Principal>
+            <Dependent Role="Categorias">
+              <PropertyRef Name="IdTipoFinanca" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
         <Association Name="FK_Financas_Categorias">
           <End Role="Categorias" Type="DB_FINANCASModel.Store.Categorias" Multiplicity="1" />
           <End Role="Financas" Type="DB_FINANCASModel.Store.Financas" Multiplicity="*" />
@@ -59,32 +82,20 @@
             </Dependent>
           </ReferentialConstraint>
         </Association>
-        <Association Name="FK_Financas_TipoFinancas">
-          <End Role="TipoFinancas" Type="DB_FINANCASModel.Store.TipoFinancas" Multiplicity="1" />
-          <End Role="Financas" Type="DB_FINANCASModel.Store.Financas" Multiplicity="*" />
-          <ReferentialConstraint>
-            <Principal Role="TipoFinancas">
-              <PropertyRef Name="IdTipoFinanca" />
-            </Principal>
-            <Dependent Role="Financas">
-              <PropertyRef Name="IdTipoFinanca" />
-            </Dependent>
-          </ReferentialConstraint>
-        </Association>
       </Schema></edmx:StorageModels>
     <!-- CSDL content -->
     <edmx:ConceptualModels>
       <Schema Namespace="DB_FINANCASModel" Alias="Self" p1:UseStrongSpatialTypes="false" xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation" xmlns:p1="http://schemas.microsoft.com/ado/2009/02/edm/annotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm">
         <EntityContainer Name="DB_FINANCASEntities" p1:LazyLoadingEnabled="true">
           <EntitySet Name="Categorias" EntityType="DB_FINANCASModel.Categoria" />
-          <EntitySet Name="Financas" EntityType="DB_FINANCASModel.Financa" />
           <EntitySet Name="TipoFinancas" EntityType="DB_FINANCASModel.TipoFinanca" />
+          <AssociationSet Name="FK_Categorias_TipoFinancas" Association="DB_FINANCASModel.FK_Categorias_TipoFinancas">
+            <End Role="TipoFinanca" EntitySet="TipoFinancas" />
+            <End Role="Categoria" EntitySet="Categorias" />
+          </AssociationSet>
+          <EntitySet Name="Financas" EntityType="DB_FINANCASModel.Financa" />
           <AssociationSet Name="FK_Financas_Categorias" Association="DB_FINANCASModel.FK_Financas_Categorias">
             <End Role="Categoria" EntitySet="Categorias" />
-            <End Role="Financa" EntitySet="Financas" />
-          </AssociationSet>
-          <AssociationSet Name="FK_Financas_TipoFinancas" Association="DB_FINANCASModel.FK_Financas_TipoFinancas">
-            <End Role="TipoFinanca" EntitySet="TipoFinancas" />
             <End Role="Financa" EntitySet="Financas" />
           </AssociationSet>
         </EntityContainer>
@@ -94,24 +105,10 @@
           </Key>
           <Property Type="Int32" Name="IdCategoria" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
           <Property Type="String" Name="Descricao" Nullable="false" MaxLength="50" FixedLength="false" Unicode="false" />
-          <NavigationProperty Name="Financas" Relationship="DB_FINANCASModel.FK_Financas_Categorias" FromRole="Categoria" ToRole="Financa" />
           <Property Type="Boolean" Name="Basica" Nullable="false" />
-        </EntityType>
-        <EntityType Name="Financa">
-          <Key>
-            <PropertyRef Name="IdFinanca" />
-          </Key>
-          <Property Type="Int32" Name="IdFinanca" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
-          <Property Type="Int32" Name="IdCategoria" Nullable="false" />
-          <Property Type="Int32" Name="IdTipoFinanca" Nullable="false" />
-          <Property Type="String" Name="Descricao" Nullable="false" MaxLength="50" FixedLength="false" Unicode="false" />
-          <Property Type="Double" Name="Valor" Nullable="false" />
-          <Property Type="Boolean" Name="Fechada" Nullable="false" />
-          <Property Type="Boolean" Name="Paga" Nullable="false" />
-          <Property Type="Binary" Name="Comprovante" MaxLength="Max" FixedLength="false" />
-          <NavigationProperty Name="Categoria" Relationship="DB_FINANCASModel.FK_Financas_Categorias" FromRole="Financa" ToRole="Categoria" />
-          <NavigationProperty Name="TipoFinanca" Relationship="DB_FINANCASModel.FK_Financas_TipoFinancas" FromRole="Financa" ToRole="TipoFinanca" />
-          <Property Type="DateTime" Name="Data" Nullable="false" Precision="0" />
+          <Property Type="Int32" Name="IdTipoFinanca" />
+          <NavigationProperty Name="TipoFinanca" Relationship="DB_FINANCASModel.FK_Categorias_TipoFinancas" FromRole="Categoria" ToRole="TipoFinanca" />
+          <NavigationProperty Name="Financas" Relationship="DB_FINANCASModel.FK_Financas_Categorias" FromRole="Categoria" ToRole="Financa" />
         </EntityType>
         <EntityType Name="TipoFinanca">
           <Key>
@@ -119,7 +116,33 @@
           </Key>
           <Property Type="Int32" Name="IdTipoFinanca" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
           <Property Type="String" Name="Descricao" Nullable="false" MaxLength="30" FixedLength="false" Unicode="false" />
-          <NavigationProperty Name="Financas" Relationship="DB_FINANCASModel.FK_Financas_TipoFinancas" FromRole="TipoFinanca" ToRole="Financa" />
+          <NavigationProperty Name="Categorias" Relationship="DB_FINANCASModel.FK_Categorias_TipoFinancas" FromRole="TipoFinanca" ToRole="Categoria" />
+        </EntityType>
+        <Association Name="FK_Categorias_TipoFinancas">
+          <End Type="DB_FINANCASModel.TipoFinanca" Role="TipoFinanca" Multiplicity="0..1" />
+          <End Type="DB_FINANCASModel.Categoria" Role="Categoria" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="TipoFinanca">
+              <PropertyRef Name="IdTipoFinanca" />
+            </Principal>
+            <Dependent Role="Categoria">
+              <PropertyRef Name="IdTipoFinanca" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <EntityType Name="Financa">
+          <Key>
+            <PropertyRef Name="IdFinanca" />
+          </Key>
+          <Property Type="Int32" Name="IdFinanca" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Type="Int32" Name="IdCategoria" Nullable="false" />
+          <Property Type="String" Name="Descricao" Nullable="false" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Type="Double" Name="Valor" Nullable="false" />
+          <Property Type="DateTime" Name="Data" Nullable="false" Precision="0" />
+          <Property Type="Boolean" Name="Fechada" Nullable="false" />
+          <Property Type="Boolean" Name="Paga" Nullable="false" />
+          <Property Type="Binary" Name="Comprovante" MaxLength="Max" FixedLength="false" />
+          <NavigationProperty Name="Categoria" Relationship="DB_FINANCASModel.FK_Financas_Categorias" FromRole="Financa" ToRole="Categoria" />
         </EntityType>
         <Association Name="FK_Financas_Categorias">
           <End Type="DB_FINANCASModel.Categoria" Role="Categoria" Multiplicity="1" />
@@ -133,18 +156,6 @@
             </Dependent>
           </ReferentialConstraint>
         </Association>
-        <Association Name="FK_Financas_TipoFinancas">
-          <End Type="DB_FINANCASModel.TipoFinanca" Role="TipoFinanca" Multiplicity="1" />
-          <End Type="DB_FINANCASModel.Financa" Role="Financa" Multiplicity="*" />
-          <ReferentialConstraint>
-            <Principal Role="TipoFinanca">
-              <PropertyRef Name="IdTipoFinanca" />
-            </Principal>
-            <Dependent Role="Financa">
-              <PropertyRef Name="IdTipoFinanca" />
-            </Dependent>
-          </ReferentialConstraint>
-        </Association>
       </Schema>
     </edmx:ConceptualModels>
     <!-- C-S mapping content -->
@@ -154,24 +165,10 @@
           <EntitySetMapping Name="Categorias">
             <EntityTypeMapping TypeName="DB_FINANCASModel.Categoria">
               <MappingFragment StoreEntitySet="Categorias">
+                <ScalarProperty Name="IdTipoFinanca" ColumnName="IdTipoFinanca" />
                 <ScalarProperty Name="Basica" ColumnName="Basica" />
                 <ScalarProperty Name="Descricao" ColumnName="Descricao" />
                 <ScalarProperty Name="IdCategoria" ColumnName="IdCategoria" />
-              </MappingFragment>
-            </EntityTypeMapping>
-          </EntitySetMapping>
-          <EntitySetMapping Name="Financas">
-            <EntityTypeMapping TypeName="DB_FINANCASModel.Financa">
-              <MappingFragment StoreEntitySet="Financas">
-                <ScalarProperty Name="Data" ColumnName="Data" />
-                <ScalarProperty Name="Comprovante" ColumnName="Comprovante" />
-                <ScalarProperty Name="Paga" ColumnName="Paga" />
-                <ScalarProperty Name="Fechada" ColumnName="Fechada" />
-                <ScalarProperty Name="Valor" ColumnName="Valor" />
-                <ScalarProperty Name="Descricao" ColumnName="Descricao" />
-                <ScalarProperty Name="IdTipoFinanca" ColumnName="IdTipoFinanca" />
-                <ScalarProperty Name="IdCategoria" ColumnName="IdCategoria" />
-                <ScalarProperty Name="IdFinanca" ColumnName="IdFinanca" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
@@ -180,6 +177,20 @@
               <MappingFragment StoreEntitySet="TipoFinancas">
                 <ScalarProperty Name="Descricao" ColumnName="Descricao" />
                 <ScalarProperty Name="IdTipoFinanca" ColumnName="IdTipoFinanca" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Financas">
+            <EntityTypeMapping TypeName="DB_FINANCASModel.Financa">
+              <MappingFragment StoreEntitySet="Financas">
+                <ScalarProperty Name="Comprovante" ColumnName="Comprovante" />
+                <ScalarProperty Name="Paga" ColumnName="Paga" />
+                <ScalarProperty Name="Fechada" ColumnName="Fechada" />
+                <ScalarProperty Name="Data" ColumnName="Data" />
+                <ScalarProperty Name="Valor" ColumnName="Valor" />
+                <ScalarProperty Name="Descricao" ColumnName="Descricao" />
+                <ScalarProperty Name="IdCategoria" ColumnName="IdCategoria" />
+                <ScalarProperty Name="IdFinanca" ColumnName="IdFinanca" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>

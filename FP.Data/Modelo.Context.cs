@@ -26,7 +26,7 @@ namespace FP.Data
         }
     
         public DbSet<Categoria> Categorias { get; set; }
-        public DbSet<Financa> Financas { get; set; }
         public DbSet<TipoFinanca> TipoFinancas { get; set; }
+        public DbSet<Financa> Financas { get; set; }
     }
 }

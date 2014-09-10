@@ -46,10 +46,12 @@ namespace FP.Main
             PreencheTipoFinanca();
             PreencheCategoria();
             txtData.Value = DateTime.Today;
-
+            ddlTipoFinanca.Enabled = false;
 
             if (_id != 0)
                 PreencheCampos();
+
+            AlteraTipoFinanca();
         }
 
         private void PreencheCampos()
@@ -57,13 +59,15 @@ namespace FP.Main
             using (DB_FINANCASEntities ctx = new DB_FINANCASEntities())
             {
                 Financa fin = ctx.Financas.Where(f => f.IdFinanca == _id).SingleOrDefault();
+                Categoria categoria = ctx.Categorias.Where(c => c.IdCategoria == fin.IdCategoria).SingleOrDefault(); 
                 if (fin != null)
                 {
+
                     txtNome.Text = fin.Descricao;
                     txtValor.Text = fin.Valor.ToString();
                     txtData.Text = fin.Data.ToString();
                     ddlCategoria.SelectedValue = fin.IdCategoria;
-                    ddlTipoFinanca.SelectedValue = fin.IdTipoFinanca;
+                    ddlTipoFinanca.SelectedValue = categoria.IdTipoFinanca;
                     _comprovante = fin.Comprovante;
                 }
             }
@@ -111,7 +115,6 @@ namespace FP.Main
                     Financa fin = new Financa()
                     {
                         IdCategoria = int.Parse(ddlCategoria.SelectedValue.ToString()),
-                        IdTipoFinanca = int.Parse(ddlTipoFinanca.SelectedValue.ToString()),
                         Data = DateTime.Parse(txtData.Text.ToString()),
                         Descricao = txtNome.Text,
                         Paga = true,
@@ -189,6 +192,35 @@ namespace FP.Main
                 arquivoComprovante = fileDialog.FileName;
 
             txtComprovante.Text = arquivoComprovante;
+        }
+
+        private void ddlCategoria_SelectedIndexChanged(object sender, EventArgs e)
+        {
+           
+        }
+
+        private void AlteraTipoFinanca()
+        {
+           int tipoFinanca = ObterFinancaSelecionada(int.Parse(ddlCategoria.SelectedValue.ToString()));
+           ddlTipoFinanca.SelectedValue = tipoFinanca;
+        } 
+
+        private int ObterFinancaSelecionada(int tipoSelecionado)
+        {
+            int retorno = 0;
+
+            using (DB_FINANCASEntities financas = new DB_FINANCASEntities())
+            {
+                retorno = financas.Categorias.Where(c => c.IdCategoria == tipoSelecionado).Single().IdTipoFinanca.Value;
+            }
+
+            return retorno;
+
+        }
+
+        private void ddlCategoria_SelectionChangeCommitted(object sender, EventArgs e)
+        {
+            AlteraTipoFinanca();
         }
 
     }

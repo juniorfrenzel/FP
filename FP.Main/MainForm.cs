@@ -40,22 +40,24 @@ namespace FP.Main
         {
             using (DB_FINANCASEntities ctx = new DB_FINANCASEntities())
             {
-                if (e.RowCount > 1)
+                //if (e.RowCount > 1)
                 {
-                    for (int i = 0; i <= e.RowCount; i++)
+                    //for (int i = 0; i <= e.RowCount; i++)
+                    for (int i = e.RowIndex; i < e.RowCount + e.RowIndex; i++)
                     {
                         DataGridViewCellCollection cells = dgvResultado.Rows[i].Cells;
 
                         TipoFinanca tipoFinanca = new TipoFinanca();
                         Categoria categoria = new Categoria();
-                        int tipoRegistro = int.Parse(cells[6].Value.ToString());
+
                         double valor = double.Parse(cells[7].Value.ToString());
                         int idCategoria = int.Parse(cells[8].Value.ToString());
 
-                        var query = from t in ctx.TipoFinancas where t.IdTipoFinanca == tipoRegistro select t;
                         var queryCategoria = from c in ctx.Categorias where c.IdCategoria == idCategoria select c;
-                        tipoFinanca = query.First();
                         categoria = queryCategoria.First();
+
+                        var query = from t in ctx.TipoFinancas where t.IdTipoFinanca == categoria.IdTipoFinanca select t;
+                        tipoFinanca = query.First();
 
                         dgvResultado.Rows[i].Cells[5].Value = tipoFinanca.Descricao;
                         dgvResultado.Rows[i].Cells[4].Value = valor.ToString("C2");
@@ -93,16 +95,24 @@ namespace FP.Main
 
         public void PreencheGrid(bool load)
         {
-            double valorTotalDespesa;
-            double valorTotalReceita;
-            double valorTotal;
-            List<Financa> listFin = ObtemDados(load);
 
+            List<Financa> listFin = ObtemDados(load);
 
             dgvResultado.AutoGenerateColumns = false;
             dgvResultado.DataSource = listFin;
-            valorTotalDespesa = listFin.Where(a => a.IdTipoFinanca == 2).Sum(x => x.Valor);
-            valorTotalReceita = listFin.Where(a => a.IdTipoFinanca == 1).Sum(x => x.Valor);
+
+            CriaRodape(listFin);
+        }
+
+        private void CriaRodape(List<Financa> listFin)
+        {
+            double valorTotalDespesa = 0;
+            double valorTotalReceita = 0;
+            double valorTotal;
+
+            valorTotalDespesa = listFin.Where(f => f.Categoria.IdTipoFinanca == 2).Sum(f => f.Valor);
+            valorTotalReceita = listFin.Where(f => f.Categoria.IdTipoFinanca == 1).Sum(f => f.Valor);
+
             lblSaldo.ForeColor = System.Drawing.Color.Red;
             valorTotal = valorTotalReceita - valorTotalDespesa;
 
@@ -120,7 +130,7 @@ namespace FP.Main
 
             using (DB_FINANCASEntities ctx = new DB_FINANCASEntities())
             {
-                var query = from t in ctx.Financas where t.Fechada == false select t;
+                var query = ctx.Financas.Include("Categoria").Where(f => f.Fechada == false);
 
                 if (!load)
                 {
@@ -128,8 +138,9 @@ namespace FP.Main
 
                     if (fin.IdCategoria != 0)
                         query = query.Where(c => c.IdCategoria == fin.IdCategoria);
+
                     if (fin.IdTipoFinanca != 0)
-                        query = query.Where(t => t.IdTipoFinanca == fin.IdTipoFinanca);
+                        query = query.Where(t => t.Categoria.IdTipoFinanca == fin.IdTipoFinanca);
 
                     query = query.Where(f => (f.Data >= fin.DataInicial && f.Data <= fin.DataFinal));
                 }
@@ -139,7 +150,6 @@ namespace FP.Main
             }
             return listFin;
         }
-
 
         private FinancaFiltro PreencheObjetoFiltro()
         {
@@ -306,9 +316,9 @@ namespace FP.Main
                     break;
                 case 5:
                     if (_ascTipoFinanca)
-                        listFinOrdered = listFin.OrderBy(x => x.IdTipoFinanca).ToList();
+                        listFinOrdered = listFin.OrderBy(x => x.Categoria.IdTipoFinanca).ToList();
                     else
-                        listFinOrdered = listFin.OrderByDescending(x => x.IdTipoFinanca).ToList();
+                        listFinOrdered = listFin.OrderByDescending(x => x.Categoria.IdTipoFinanca).ToList();
 
                     _ascTipoFinanca = !_ascTipoFinanca;
                     break;

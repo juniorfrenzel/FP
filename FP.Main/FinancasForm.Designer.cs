@@ -100,6 +100,8 @@
             this.ddlCategoria.Name = "ddlCategoria";
             this.ddlCategoria.Size = new System.Drawing.Size(121, 21);
             this.ddlCategoria.TabIndex = 5;
+            this.ddlCategoria.SelectedIndexChanged += new System.EventHandler(this.ddlCategoria_SelectedIndexChanged);
+            this.ddlCategoria.SelectionChangeCommitted += new System.EventHandler(this.ddlCategoria_SelectionChangeCommitted);
             // 
             // label3
             // 
@@ -209,7 +211,7 @@
             this.MinimizeBox = false;
             this.Name = "FinancasForm";
             this.RightToLeft = System.Windows.Forms.RightToLeft.No;
-            this.Text = "FinancasForm";
+            this.Text = "Novo Registro";
             this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.FinancasForm_FormClosing);
             this.Load += new System.EventHandler(this.FinancasForm_Load);
             this.panel1.ResumeLayout(false);

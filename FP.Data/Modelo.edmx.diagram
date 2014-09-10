@@ -4,12 +4,12 @@
   <edmx:Designer xmlns="http://schemas.microsoft.com/ado/2009/11/edmx">
     <!-- Diagram content (shape and connector positions) -->
     <edmx:Diagrams>
-      <Diagram DiagramId="404847ee198a4eac84b5505ad96f1fd4" Name="Diagram1">
+      <Diagram DiagramId="404847ee198a4eac84b5505ad96f1fd4" Name="Diagram1" ZoomLevel="123">
         <EntityTypeShape EntityType="DB_FINANCASModel.Categoria" Width="1.5" PointX="3.2978609499045932" PointY="0.795373365653387" />
-        <EntityTypeShape EntityType="DB_FINANCASModel.Financa" Width="1.5" PointX="9.01452017063951" PointY="17.474226527602518" />
         <EntityTypeShape EntityType="DB_FINANCASModel.TipoFinanca" Width="1.5" PointX="0.29359217374287183" PointY="5.561293470468974" />
+        <AssociationConnector Association="DB_FINANCASModel.FK_Categorias_TipoFinancas" />
+        <EntityTypeShape EntityType="DB_FINANCASModel.Financa" Width="1.5" PointX="8.3359366787299223" PointY="27.820537296971555" />
         <AssociationConnector Association="DB_FINANCASModel.FK_Financas_Categorias" />
-        <AssociationConnector Association="DB_FINANCASModel.FK_Financas_TipoFinancas" />
       </Diagram>
     </edmx:Diagrams>
   </edmx:Designer>

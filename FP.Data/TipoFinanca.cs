@@ -16,12 +16,12 @@ namespace FP.Data
     {
         public TipoFinanca()
         {
-            this.Financas = new HashSet<Financa>();
+            this.Categorias = new HashSet<Categoria>();
         }
     
         public int IdTipoFinanca { get; set; }
         public string Descricao { get; set; }
     
-        public virtual ICollection<Financa> Financas { get; set; }
+        public virtual ICollection<Categoria> Categorias { get; set; }
     }
 }

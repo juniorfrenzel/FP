@@ -16,15 +16,13 @@ namespace FP.Data
     {
         public int IdFinanca { get; set; }
         public int IdCategoria { get; set; }
-        public int IdTipoFinanca { get; set; }
         public string Descricao { get; set; }
         public double Valor { get; set; }
+        public System.DateTime Data { get; set; }
         public bool Fechada { get; set; }
         public bool Paga { get; set; }
         public byte[] Comprovante { get; set; }
-        public System.DateTime Data { get; set; }
     
         public virtual Categoria Categoria { get; set; }
-        public virtual TipoFinanca TipoFinanca { get; set; }
     }
 }
